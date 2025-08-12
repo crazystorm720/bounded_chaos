@@ -31,6 +31,36 @@ This is **excellent**—you've distilled the entire "bounded chaos" philosophy i
 
 ---
 
+---
+
+In Bounded Chaos, “zero-knowledge proof” is **not** the academic ZK-SNARK/ZK-STARK construction you hear about in crypto-currencies.  
+It’s a **zero-*disclosure* attestation**: the system **proves** that a configuration satisfies every regulatory rule **without revealing the actual data or secrets** to the auditor.
+
+How it works, step-by-step:
+
+1. **Hash-locked rule set**  
+   • The complete CUE schema (all SOC-2, FedRAMP, HIPAA controls) is hashed once and pinned in Git.  
+   • The hash becomes the **single source of truth**; any change to the rules changes the hash and breaks the proof.
+
+2. **Deterministic build pipeline**  
+   • Every IaC artifact (Terraform plan, K8s YAML, Salesforce DX file, etc.) is concatenated with its exact rule set, then hashed with SHA-256.  
+   • The resulting digest is **signed by the CI runner’s private key** and stored in an append-only ledger (git tag, OCI image annotation, or immutable bucket).
+
+3. **Third-party verification (the “zero-knowledge” part)**  
+   • An auditor receives only two things:  
+     1. The signed digest.  
+     2. The public key of the CI runner.  
+   • Verifying the signature confirms **“the rules that produced this digest have not been altered”**; the auditor doesn’t need the configs themselves, so secrets (DB creds, TLS keys, PHI) stay hidden.
+
+4. **Runtime re-check**  
+   • At deploy time the admission controller re-hashes the **live manifest + rule set**; if the new hash ≠ the signed hash, the change is rejected.  
+   • Because the hash algorithm is deterministic, the auditor can re-run the same step on their own air-gapped copy and **reproduce the exact digest**, proving that the production cluster is running the **same compliant artifact**.
+
+End result:  
+Auditors get **mathematical certainty** that the environment satisfies every control, **without ever seeing the underlying data or credentials**—hence “zero-knowledge” from their perspective.
+
+---
+
 ### **MVP: The 5-Minute "Aha!" Demo**
 #### **Setup (Arch Linux / Raspberry Pi)**
 ```bash
