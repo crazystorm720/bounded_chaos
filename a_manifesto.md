@@ -1,6 +1,8 @@
 ## bounded_chaos: a_manifesto(bounded_chaos_that_leads_to_deterministic_serendipity)
 
-**Philosophy**
+**Philosophy**  
+
+a thought experiment that applies mathematical constraints to infrastructure design
 
 * Bounded chaos → deterministic serendipity
 * IaF (Infrastructure as File)
