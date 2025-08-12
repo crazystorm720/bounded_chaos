@@ -63,4 +63,9 @@ graph TD
     J --> K["Contracts Self-Enforce"]
     J --> L["Infrastructure Can't Lie"]
     J --> M["AI Stays In Lane"]
-```    
+```
+
+```mermaid
+flowchart LR
+  A[YAML/JSON Data] --> B[CUE Validation] --> C[Jinja2 Rendering] --> D[Valid Output]
+```
