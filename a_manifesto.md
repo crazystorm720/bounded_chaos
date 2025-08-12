@@ -6,6 +6,83 @@ use gemini since this is a bit long!
 
 ---
 
+---
+# 🎯 **5-Minute MVP: The Golden-Ratio Pi Cluster**
+
+> **TL;DR** – One Arch Pi, one command, instant proof that *type-safety stops disasters before they start*.
+
+---
+
+## 🧪 **What You’ll Demo**
+A **Minikube 8-node cluster** (Fibonacci 8) where:
+- **Stateful pods** *only* land on prime nodes (3, 5, 7).  
+- **Every container** *must* have `CPU:RAM = 1 : 1.618` or it’s rejected.  
+- **Nothing deploys** until `cue vet` says “✅”.
+
+---
+
+## 🪄 **One-Liner Setup (Arch)**
+```bash
+sudo pacman -Syu --noconfirm minikube cue git && \
+minikube start --nodes 8 --cpus 4 --memory 4g && \
+git clone https://github.com/bounded-chaos/minidemo.git && cd minidemo
+```
+
+---
+
+## 📁 **The 3 Files That Matter**
+| File | Purpose | Magic Line |
+|---|---|---|
+| `cluster.cue` | Defines *the laws* | `assert math.Round(mem/cpu*1000) == 1618` |
+| `bad-pod.yaml` | Intentionally wrong | `cpu: 500m, memory: 1Gi` |
+| `good-pod.yaml` | Golden ratio | `cpu: 1000m, memory: 1618Mi` |
+
+---
+
+## 🎬 **30-Second Demo Script**
+```bash
+# 1. Try the broken one → instant red ❌
+cue vet bad-pod.yaml
+# Output: cpu:memory ratio != φ (1.618)
+
+# 2. Try the golden one → instant green ✅
+cue vet good-pod.yaml && cue export good-pod.yaml | kubectl apply -f -
+
+# 3. Watch prime magic
+kubectl get pods -o wide | awk '$7 ~ /node-(3|5|7)/'
+# Shows pods *only* on prime-indexed nodes.
+```
+
+---
+
+## 🖼️ **Visual Proof in Terminal**
+```mermaid
+%% Show in terminal via `minikube dashboard`
+graph TD
+    User[Edit YAML] -->|cue vet| Gate{Golden Ratio?}
+    Gate -->|Fail| Stop[❌ Rejected]
+    Gate -->|Pass| K8s[✅ Deployed]
+    K8s -->|Placement| Prime[Prime Nodes 3,5,7]
+```
+
+---
+
+## 🍼 **Recruit Non-Tech Friends**
+> “Imagine spell-check for infrastructure—**but the spell-checker is math**.”
+
+---
+
+## 🛠️ **Next 10 Minutes (Optional)**
+- Swap the Pi for AWS → **same `cue vet` passes/fails**.  
+- Change Fibonacci to 13 nodes → **zero config drift**.  
+- Add a Grafana panel → **live CPU:RAM ϕ ratio graph**.
+
+---
+
+## 🏁 **The Close**
+> “We didn’t fix Kubernetes. We just made **bad configs mathematically impossible**—on a $35 computer.”
+---
+
 applying formal methods and mathematical constraints to infrastructure configuration," it's a logical evolution of existing practices. The CUE validation pipeline alone would prevent a lot of common deployment failures.
 
 ---
