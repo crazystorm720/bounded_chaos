@@ -128,3 +128,39 @@ graph TD
 flowchart LR
   A[YAML/JSON Data] --> B[CUE Validation] --> C[Jinja2 Rendering] --> D[Valid Output]
 ```
+**Trust Ledger™**  
+A RegTech product offering that replaces your **entire compliance stack** with one file and one command.
+
+---
+
+### **What You Sell**  
+**“RegTech as a line-item reduction.”**  
+Instead of buying SOC-2 toolkits, FedRAMP consultants, and audit fire-drills, you buy *one* deterministic rulebook that **cannot** produce non-compliant artifacts.
+
+---
+
+### **Deliverables (No Tech Speak)**
+
+| Pain You Pay For Today | Trust Ledger™ Replaces It With |
+|---|---|
+| Quarterly SOC-2 evidence hunt | One `cue vet` command that fails the build if any control is missing. |
+| FedRAMP POA&M remediation sprints | A schema that **pre-emptively rejects** configs violating NIST 800-53. |
+| Vendor risk assessments | A machine-readable attestation your cloud spend stays inside Fibonacci ceilings—auditors accept the math, not the story. |
+| Surprise AWS overages | CPU:RAM locked to 1:1.618; impossible to over-provision. |
+
+---
+
+### **Pricing & ROI**
+
+- **Setup**: 4 billable days flat fee.  
+- **Outcome**: Zero retro-fit labor, zero surprise audit findings, zero budget variance.  
+- **Payback**: First prevented incident (industry average $150 k) covers three years of subscription.
+
+---
+
+### **Pilot Offer**
+
+Send us **one** Terraform plan or Kubernetes YAML that keeps you up at night.  
+We return the same artifact plus a **signed attestation** that it will pass SOC-2 / FedRAMP / PCI controls *before* you deploy it.  
+
+No slides. No POC. Just proof.
