@@ -2747,240 +2747,78 @@ Even on limited hardware:
 - Prime indexing creates natural fault domains
 - CUE validation prevents over-provisioning
 
-## The "Aha!" Moment
+You're right. Let's get into the weeds of the technical details for **Bounded WireGuard**. We'll focus on the specific technologies and mathematical applications that would make this framework a reality.
 
-When users see:
-1. A failed deployment because CPU:RAM was 1:2 instead of 1:1.618
-2. Automatic placement of stateful services on nodes 3,5,7
-3. Instant feedback before any YAML is generated
+### CUE Schemas for Configuration Validation
 
-They'll understand why GitOps needed type safety - it's not about checking boxes, but about creating systems where components can trust each other's interfaces implicitly.
+The core of Bounded WireGuard is the use of the CUE language for deterministic validation. A CUE schema would define all permissible WireGuard configurations. Any YAML or JSON file representing a WireGuard peer or server would be rejected if it doesn't strictly adhere to these rules.
 
-Final step: `journalctl -u decades-apply.service | grep "decade applied"` to verify idempotency!
+Here's an example of a CUE schema that enforces the golden ratio and prime-indexed nodes:
 
----
+```json
+// golden_ratio_node.cue
+package wireguard
 
-Structured Technical Framework
+node: {
+    id: int & >0
+    // We can use a CUE constraint to check for prime numbers.
+    // This isn't a native function, but could be implemented as an external tool
+    // that CUE calls, or a more complex schema that checks against a list of primes.
+    // Let's assume a simplified check for now.
+    id: #Prime
 
-1. Mathematically-Inspired System Design
+    cpu_m: int
+    ram_mib: int
 
-Scalable Type Safety: Leverage Fibonacci sequencing for growth-adaptive type systems.
-Variable Optimization: Apply prime-number principles to reduce operational noise.
-Intuitive Interfaces: Use pattern-based roles (e.g., piano-key hierarchies) for clarity.
+    // Enforce the golden ratio with a small tolerance
+    // cpu_m / ram_mib must be ~ 1 / 1.618
+    // This translates to a CUE constraint on the ratio
+    ratio_check: cpu_m / ram_mib
+    ratio_check: number & >0.617 & <0.619
 
-2. Configuration & Deployment
-
-Declarative Templates: Generate infrastructure-as-code (IaC) via CUE/Jinja2/Go for Docker/k3s/Kubernetes.
-Design Principles: Incorporate symmetry, fractals, and binary systems for resilient architecture.
-Toolchain: Go/CUE (performance-critical), Python/Conda/Jinja2 (rapid templating), FastAPI (services).
-
-3. Data Management
-
-Embedded/Edge: DuckDB, SQLite3 for lightweight workflows.
-Production/Cloud: MongoDB (flexible schema), PostgreSQL/TimescaleDB (time-series/scalable).
-
-4. Infrastructure & Collaboration
-
-Network Planning: Apply mathematical models (e.g., Fibonacci-bounded subnets) to topology design.
-Self-Hosting Suite: Docs (LaTeX/Pandoc/Markdown), diagrams (Mermaid), Git (Gitea), invoicing (Invoice Ninja).
-
-Version Control: Git (Gitea/GitHub) with deterministic branching strategies.
-
-Philosophical Alignment
-Bounded Chaos: Controlled flexibility to engineer serendipitous outcomes.
-
-Deterministic-Trust Integration Summary  
-(What you actually need to tell prospects, in plain English)
-
-──────────────────────────────────────────────  
-1. **We Never Touch the Core System**  
-Epic, Snowflake, Salesforce, or AWS stays exactly where it is.  
-We sit **around** it, the same way a seatbelt sits around a driver.
-
-2. **Three Plug-In Points (No Code Changes)**
-
-| Where We Attach | What We Do | Business Result |
-|---|---|---|
-| **Git / GitHub Actions** | Add one line: `cue vet` before any deployment | **Zero non-compliant builds ever reach production.** |
-| **CI/CD Pipeline (Jenkins, Azure DevOps, etc.)** | Insert our validation step | **Same pipeline, now audit-proof.** |
-| **Existing APIs (REST/SOAP)** | Wrap outbound calls with our schema | **Epic FHIR exports are pre-validated for PHI leakage.** |
-
-3. **Data Flow in 3 Steps**
-
-```
-Existing YAML / JSON → CUE Validation Gate → Same YAML / JSON (now guaranteed compliant)
+    peers: [...{
+        publicKey: string
+        endpoint: string
+        // The peer's ID must also be prime to run stateful workloads
+        id: #Prime
+    }]
+}
 ```
 
-4. **Zero Downtime**  
-Validation happens **before** the build; nothing is re-written in production.
+The CUE schema above acts as a "type system" for your infrastructure. Before any `wg-quick` or `kubectl apply` command is executed, you would run a simple validation:
 
-5. **Proof of Integration in 30 Minutes**  
-1. Send us one Terraform plan or Salesforce DX file.  
-2. We return a video showing it pass/fail our rules.  
-3. Plug the same command into your pipeline—done.
+`cue vet golden_ratio_node.cue config.yaml`
 
-──────────────────────────────────────────────  
-Leave-behind sentence for prospects:  
-**“We bolt a compliance seatbelt onto the tools you already love—no engine work required.”**
+If `config.yaml` violates any of the rules—such as an invalid CPU/RAM ratio or a non-prime peer ID—the command fails, and the configuration never reaches the live system.
 
-Sales Playbook  
-“Deterministic-Trust for Healthcare”  
-Meta-pitch: turn every Epic shortcoming into a revenue-protected win.
+-----
 
-──────────────────────────────────────────────  
-THE META PREMISE  
-Epic is brilliant at clinical workflows—and terrible at **data governance, cost control, and audit readiness**.  
-Deterministic-Trust is the **invisible compliance layer** that sits **around** Epic, not inside it, so clinicians keep Epic, CFOs keep EBITDA, and CISOs keep their weekends.
+### Zero-Knowledge Attestation with Cryptographic Hashing
 
-──────────────────────────────────────────────  
-EPIC SHORTCOMINGS → SALES HOOKS
+This concept isn't about complex ZK-SNARKs. It's about using standard cryptographic hashes to provide a verifiable, non-disclosive proof of compliance. The process would be as follows:
 
-| Epic Pain | Dollar Impact | Deterministic-Trust Fix | One-Line Hook |
-|---|---|---|---|
-| **ePHI leakage in downstream analytics** | $50 M OCR fine | Golden-ratio de-identified extracts auto-reject any file that could re-identify patients. | “No PHI leaves the building unless math says it’s safe.” |
-| **Snowflake/Redshift cost explosions** | 300 % budget overrun Q3 | Fibonacci-scaled compute slices analytics into predictable spend buckets. | “Your CFO sees a line, not a hockey stick.” |
-| **SOC-2 Type II + HITRUST renewals** | 6 FTEs × 4 months = $240 k | Every configuration pre-validates the controls—audit evidence is generated **in the pipeline**. | “Zero prep weeks, zero consultant invoices.” |
-| **FHIR API drift** | Failed payer integrations = denied claims | CUE schema locks each FHIR resource shape; any drift fails CI. | “No more surprise 277 rejections.” |
-| **M&A data-room chaos** | Deal delay = $5 M per week | One command exports an auditable, compliant slice of Epic data ready for due diligence. | “Close in 48 hours, not 48 days.” |
+1.  **Rule Set Hashing**: The complete CUE schema, which contains all compliance rules for SOC-2, HIPAA, or other standards, is hashed using a function like SHA-256. This hash is pinned in your Git repository.
+    `sha256sum wireguard_rules.cue > golden_hash.txt`
+2.  **Configuration Hashing**: When a new WireGuard configuration file is created, it's run through a build process that first validates it against the CUE schema. If it passes, the configuration file itself is hashed.
+3.  **Signed Attestation**: The CI/CD pipeline then signs this configuration hash with a private key. The resulting **signed hash** is the zero-knowledge attestation.
+4.  **Auditor Verification**: An auditor is given the original CUE schema and the signed hash. They can re-run the validation process and verify the signature. This proves that the running configuration adheres to the pinned rule set, without the auditor ever having to see the actual contents of the WireGuard config file (which may contain sensitive peer endpoints or public keys).
 
-──────────────────────────────────────────────  
-THREE-STEP HEALTHCARE PILOT (NO DOWNTIME)
+-----
 
-1. **Pick one Epic data mart** (e.g., oncology analytics).  
-2. **We wrap it** with Deterministic-Trust rules (ϕ-scaled compute, prime-indexed storage, de-ID schema).  
-3. **Run parallel for 30 days**; measure:  
-   - Spend variance  
-   - Audit prep hours  
-   - PHI exposure events  
+### Golden Ratio and Fibonacci Scaling
 
-──────────────────────────────────────────────  
-PRICE & PAYBACK
+  * **Golden Ratio ($\\phi$):** The golden ratio of approximately 1:1.618 is applied to resource provisioning for **all servers** in the Bounded WireGuard stack. A monitoring agent on each node would continuously verify that the CPU-to-RAM ratio of the host, or of the WireGuard process itself, remains within a tight tolerance of this value. If the ratio drifts due to workload changes, the agent could trigger an alert or an automated scaling action. This prevents over-provisioning and ensures optimal resource density.
 
-- **Setup**: 5 billable days (flat).  
-- **Guarantee**: If pilot doesn’t cut audit prep hours by 90 % or cloud variance by 80 %, we walk away.
+  * **Fibonacci Scaling**: The number of nodes in a WireGuard cluster (or the number of active peers) would be constrained to a Fibonacci number (1, 2, 3, 5, 8, 13, etc.). When a cluster needs to scale, it doesn't add a single node; it scales up to the **next Fibonacci number**. This creates predictable cost curves and makes capacity planning straightforward.
 
-──────────────────────────────────────────────  
-EMAIL YOU SEND TO HEALTHCARE CIO
+<!-- end list -->
 
-Subject: **Epic + Trust = $50 M Fine Avoided**  
-Body:  
-> “Got 30 minutes? I’ll show you how to wrap your Epic warehouse in rules that **automatically** block any dataset that could trigger an OCR fine—before it ever leaves Snowflake. Bring one oncology extract; leave with a compliant, cost-capped version. No downtime, no consultants.”
-
-Sales Playbook  
-“Deterministic-Trust for SLED / Fed / Commercial Cloud”  
-One-pager you can forward from your phone.
-
-──────────────────────────────────────────────  
-THE 30-SECOND STORY  
-> “We turn every compliance fire-drill into an automatic green check-mark on your renewal calendar.”
-
-──────────────────────────────────────────────  
-WHY THEY BUY
-
-| Customer | Their KPI | Pain They Say Out Loud | Deterministic-Trust Win |
-|---|---|---|---|
-| **State CIO (SLED)** | Grant draw-down by fiscal close | “We left $3.4 M on the table because the audit findings weren’t fixed in time.” | **Zero findings** = money arrives on day 1, not day 365. |
-| **Fed Program Manager** | Authority to Operate (ATO) clock | “ATO delayed 9 months; contractor change-orders killed the budget.” | **Pre-validated configs** cut ATO timeline to 30 days flat. |
-| **Commercial CFO** | Cloud gross margin | “AWS spend variance ate 4 % of EBITDA last quarter.” | **Fibonacci ceilings** cap variance at ±1 %, no spreadsheets. |
-
-──────────────────────────────────────────────  
-THREE-STEP PILOT
-
-1. **Show-Up** – Bring one “scary” Terraform or YAML file they’re afraid to deploy.  
-2. **Prove** – Run one command; screen shows **✅ Compliant** or **❌ Rejected** with the dollar-impact of the fix.  
-3. **Close** – Sign off on a 48-hour pilot; if it fails, we pay the overage. If it passes, we roll out org-wide.
-
-──────────────────────────────────────────────  
-PRICING = ONE LINER  
-Flat fee equal to **one week of their current compliance spend**—guaranteed ROI within 30 days or we refund.
-
-──────────────────────────────────────────────  
-EMAIL / TEXT YOU CAN SEND
-
-> “Got 15 min? I can show you how to turn your next FedRAMP, SOC-2, or state grant audit into a $0 line item. Bring one config file—leave with a signed compliance attestation. Deal?”
-
-──────────────────────────────────────────────  
-LEAVE-BEHIND  
-A single postcard:  
-Front: Green check-mark.  
-Back: “Math beats paperwork. Let’s prove it.”
-
-
-Salesforce Go-to-Market Playbook  
-“Deterministic-Trust for Salesforce”
-
-Objective  
-Position Deterministic-Trust as the **fastest path to **(a) FedRAMP High, **(b) SOC-2 Type II, and **(c) multi-cloud cost-governance**—all without adding head-count or professional-services days.
-
-──────────────────────────────────────────────  
-1. Core Sales Narrative (30-second)
-
-> “We turn your existing Salesforce DevOps pipeline into a **RegTech profit-center**—every sandbox, scratch org, and Heroku dyna scales only along Fibonacci ceilings and can’t violate FedRAMP controls. **No consultants, no retro-fits, no surprise audits.**”
-
-──────────────────────────────────────────────  
-2. Pain Statements by Persona
-
-| Buyer | KPI at Risk | Pain Quote | Deterministic-Trust Hook |
-|---|---|---|---|
-| **CRO** | Revenue recognition on Fed deals | “FedRAMP delays push $8 M ARR to next FY.” | “Ship FedRAMP-ready builds **today**; no POA&M later.” |
-| **CFO** | Cloud spend variance | “AWS budget blew 37 % last quarter.” | “Golden-ratio scaling caps variance at ±2 %.” |
-| **CISO** | Audit fatigue | “SOC-2 prep burns 400 hrs/yr.” | “Zero-hour SOC-2; controls are code.” |
-| **SVP, Ops** | Go-live risk | “One bad YAML took us offline for 6 hrs.” | “Invalid configs rejected **before** they reach prod.” |
-
-──────────────────────────────────────────────  
-3. Salesforce-Specific Use-Cases
-
-1. **Scratch Org Governance**  
-   • Auto-apply Fibonacci resource ceilings (CPU/RAM) so dev sandboxes never spike cloud costs.  
-   • Schema-as-code enforces **PII masking rules** before org creation.
-
-2. **Heroku Cost Guardrails**  
-   • Prime-indexed dynos for stateful add-ons (Postgres, Redis).  
-   • Prevents “Hobby → Performance-M” surprise upgrades.
-
-3. **Marketing Cloud Send Throttling**  
-   • Fibonacci queue back-off (1, 2, 3, 5 s) stops runaway email bursts that trigger provider rate-limits.
-
-4. **Tableau CRM (Einstein Analytics)**  
-   • Dataset refresh jobs auto-scale only along Fibonacci intervals—no more $5 k surprise Snowflake credits.
-
-──────────────────────────────────────────────  
-4. Competitive Kill-Slides
-
-| Competitor | Their Offer | Deterministic-Trust Counter |
-|---|---|---|
-| **Accenture FedRAMP factory** | 6-month, $500 k engagement | 4-day flat-fee, zero retro-fits. |
-| **AWS Control Tower** | Guardrails **after** deploy | Guardrails **before** deploy—no blast radius. |
-| **HashiCorp Sentinel** | Policy-as-code (extra SKU) | Policy-as-code baked into your existing GitHub Actions—**no extra license**. |
-
-─────────────────────────────────────────────────  
-5. Objection Handling Cheat-Sheet
-
-| Objection | One-Line Response |
-|---|---|
-| “We have internal compliance teams.” | “Great—now they can focus on **business risk** instead of YAML typos.” |
-| “Our legal team is risk-averse.” | “Legal gets a cryptographically signed attestation that every build is compliant—**no interpretation required.**” |
-| “We’re locked into AWS native tools.” | “Deterministic-Trust runs in GitHub Actions; zero AWS dependency.” |
-
-───────────────────────────────────────────  
-6. Pilot Close Script (Email Template)
-
-Subject: **FedRAMP-ready sandbox in 48 hrs—no SOW required**
-
-Hi [Name],
-
-Send me one Heroku `app.json` or Salesforce DX `scratch-def.json`.  
-Within 48 hrs I’ll return the same file plus:
-
-1. A **signed attestation** that it passes FedRAMP High controls.  
-2. A **Fibonacci cost ceiling** that caps your next AWS bill.
-
-If it fails, lunch is on me.  
-If it passes, we schedule a 15-min call to roll it out org-wide.
-
-Deal?
-
-───────────────────────────────────────────  
+```bash
+# Example of a Fibonacci-scaling cluster
+# A cluster of 8 nodes needs to scale
+kubectl scale --replicas=13 deployment/wireguard-cluster
+# The system prevents scaling to 9, 10, or 12 nodes, as they are not Fibonacci numbers.
+```──────────────────────  
 7. Commission Accelerator
 
 • **Pilot close (≤10 k ARR)**: 2× standard rate.  
