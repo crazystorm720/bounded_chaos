@@ -35,7 +35,7 @@ sudo pacman -S minikube cue docker kubectl
 minikube start --nodes 8 --memory 2048 --cpus 4
 
 # 3. Clone the 42-line demo repo
-git clone https://github.com/bounded-chaos/minidemo && cd minidemo
+# git clone https://github.com/bounded-chaos/minidemo && cd minidemo <--- have an LLM help you along here...this isn't a repo (yet)
 
 # 4. Try a bad ratio (watch it fail)
 cue vet bad-ratio.cue
