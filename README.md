@@ -98,7 +98,7 @@ Modern infra fails because:
 ## **5-Minute Demo**  
 ```bash
 # On Arch (btw) or any sane OS:
-git clone https://github.com/bounded-chaos/minidemo
+git clone https://github.com/crazystorm720/bounded_chaos/blob/main/minidemo.md ### not ready yet
 cd minidemo && cue vet cluster.cue  # Fails if RAM ≠ CPU × ϕ
 cue export cluster.cue | kubectl apply -f -  # Applies iff valid
 ```
