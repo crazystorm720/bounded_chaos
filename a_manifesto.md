@@ -284,6 +284,56 @@ Here’s a **tightly organized, tool-focused framework** that preserves your "bo
 
 ---
 
+---
+
+**Core Stack**
+
+* **Arch Linux** (base)
+* **CUE**, **Go**, **Jinja2**, **Python**, **Conda**
+* **Docker**, **k3s**, **Kubernetes**, **Minikube**
+* **FastAPI** (services)
+* **DuckDB**, **SQLite3**, **MongoDB**, **PostgreSQL**, **TimescaleDB**
+* **LaTeX**, **Pandoc**, **Markdown**, **Mermaid**
+* **Git**, **Gitea**, **GitHub**, **Invoice Ninja**
+
+**Design & Deployment Principles**
+
+* **CUE** for mathematically-bound type safety (Fibonacci, primes, φ)
+* **Go**, **Jinja2**, **Python** for IaC templating
+* **Docker** / **k3s** / **Kubernetes** for deployment
+* **Mermaid** for topology visualization
+* **Git** / **Gitea** deterministic branching strategies
+
+**Data & Infrastructure**
+
+* **DuckDB**, **SQLite3** for embedded/edge
+* **MongoDB**, **PostgreSQL**, **TimescaleDB** for production/cloud
+* **LaTeX**, **Pandoc**, **Markdown** for documentation
+* **Invoice Ninja** for self-hosted ops
+
+---
+
+# Bounded Chaos Deployment: A Minikube & Meta-CUE Manifesto
+
+Let's break down this brilliant manifesto into an actionable MVP that demonstrates type safety's power through tangible results.
+
+## Core Concepts to Demonstrate
+
+1. **Mathematically Constrained Infrastructure** (ϕ ratios, prime indexing)
+2. **Pre-execution Validation** (CUE before YAML)
+3. **Deterministic Serendipity** (Chaos within strict bounds)
+4. **Zero-Knowledge Provisioning** (Trust through verification)
+
+## MVP: Fibonacci Microservices Cluster
+
+---
+I see what you’ve got here — it’s basically a **meta-spec plus working blueprint** for taking the “bounded chaos → deterministic serendipity” philosophy and showing it in a *hands-on, small hardware-friendly way* so even someone who’s never heard the words “type safety” gets the point instantly.
+
+Here’s the way I’d structure the MVP so it **clicks in one demo** and still carries your whole philosophy:
+---
+
+---
+
 ### **6. Local Dev Rig**  
 *(Arch Linux primitives)*  
 ```sh  
@@ -338,14 +388,6 @@ graph LR
 ```  
 
 This is what is called **"infrastructure as file"** ethos while adding just enough structure to tame chaos. Tools are Arch-compatible, single-binary where possible, and enforce CUE’s type rigor at key boundaries.
-
----
-
----
-
-I see what you’ve got here — it’s basically a **meta-spec plus working blueprint** for taking the “bounded chaos → deterministic serendipity” philosophy and showing it in a *hands-on, small hardware-friendly way* so even someone who’s never heard the words “type safety” gets the point instantly.
-
-Here’s the way I’d structure the MVP so it **clicks in one demo** and still carries your whole philosophy:
 
 ---
 
@@ -560,46 +602,6 @@ Thanks for the shoulders to stand on Marcel!
 
 ---
 
-**Core Stack**
-
-* **Arch Linux** (base)
-* **CUE**, **Go**, **Jinja2**, **Python**, **Conda**
-* **Docker**, **k3s**, **Kubernetes**, **Minikube**
-* **FastAPI** (services)
-* **DuckDB**, **SQLite3**, **MongoDB**, **PostgreSQL**, **TimescaleDB**
-* **LaTeX**, **Pandoc**, **Markdown**, **Mermaid**
-* **Git**, **Gitea**, **GitHub**, **Invoice Ninja**
-
-**Design & Deployment Principles**
-
-* **CUE** for mathematically-bound type safety (Fibonacci, primes, φ)
-* **Go**, **Jinja2**, **Python** for IaC templating
-* **Docker** / **k3s** / **Kubernetes** for deployment
-* **Mermaid** for topology visualization
-* **Git** / **Gitea** deterministic branching strategies
-
-**Data & Infrastructure**
-
-* **DuckDB**, **SQLite3** for embedded/edge
-* **MongoDB**, **PostgreSQL**, **TimescaleDB** for production/cloud
-* **LaTeX**, **Pandoc**, **Markdown** for documentation
-* **Invoice Ninja** for self-hosted ops
-
----
-
-# Bounded Chaos Deployment: A Minikube & Meta-CUE Manifesto
-
-Let's break down this brilliant manifesto into an actionable MVP that demonstrates type safety's power through tangible results.
-
-## Core Concepts to Demonstrate
-
-1. **Mathematically Constrained Infrastructure** (ϕ ratios, prime indexing)
-2. **Pre-execution Validation** (CUE before YAML)
-3. **Deterministic Serendipity** (Chaos within strict bounds)
-4. **Zero-Knowledge Provisioning** (Trust through verification)
-
-## MVP: Fibonacci Microservices Cluster
-
 ### Architecture
 
 ```
@@ -754,4 +756,5 @@ Version Control: Git (Gitea/GitHub) with deterministic branching strategies.
 
 Philosophical Alignment
 Bounded Chaos: Controlled flexibility to engineer serendipitous outcomes.
+
 I run Arch btw! {42f} LGTM 👍
