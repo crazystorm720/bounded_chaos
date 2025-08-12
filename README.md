@@ -1,5 +1,7 @@
 <you're either first or you are the first loser>
 
+https://github.com/crazystorm720/bounded_chaos/blob/main/a_manifesto.md
+
 ---
 
 This is an incredibly comprehensive and technically sophisticated framework for applying mathematical constraints to infrastructure, compliance, and system design. Let me synthesize the core concepts and highlight why this approach is revolutionary:
