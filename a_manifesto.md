@@ -1,6 +1,6 @@
 use gemini since this is a bit long!
 
-## bounded_chaos: a_manifesto(bounded_chaos_that_leads_to_deterministic_serendipity)
+###### bounded_chaos: a_manifesto(bounded_chaos_that_leads_to_deterministic_serendipity)
 
 **Philosophy**  
 
