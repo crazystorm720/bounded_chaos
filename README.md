@@ -1,6 +1,3 @@
-Here’s the recursive, meta-aligned README.md framework in pseudocode that embodies its own principles:
-
-```markdown
 # BOUNDED CHAOS FRAMEWORK (vφ)
 
 ```pseudocode
