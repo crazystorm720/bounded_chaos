@@ -2,7 +2,7 @@
 
 **Philosophy**  
 
-a thought experiment that applies mathematical constraints to infrastructure design but it's a bit bigger in scale I'd say
+a thought experiment that applies mathematical constraints to infrastructure design but it's a bit bigger in scale I'd say 🫶
 
 * Bounded chaos → deterministic serendipity
 * IaF (Infrastructure as File)
