@@ -48,6 +48,39 @@ Thanks for the shoulders to stand on Marcel!
 
 ---
 
+**Core Stack**
+
+* **Arch Linux** (base)
+* **CUE**, **Go**, **Jinja2**, **Python**, **Conda**
+* **Docker**, **k3s**, **Kubernetes**, **Minikube**
+* **FastAPI** (services)
+* **DuckDB**, **SQLite3**, **MongoDB**, **PostgreSQL**, **TimescaleDB**
+* **LaTeX**, **Pandoc**, **Markdown**, **Mermaid**
+* **Git**, **Gitea**, **GitHub**, **Invoice Ninja**
+
+**Design & Deployment Principles**
+
+* **CUE** for mathematically-bound type safety (Fibonacci, primes, φ)
+* **Go**, **Jinja2**, **Python** for IaC templating
+* **Docker** / **k3s** / **Kubernetes** for deployment
+* **Mermaid** for topology visualization
+* **Git** / **Gitea** deterministic branching strategies
+
+**Data & Infrastructure**
+
+* **DuckDB**, **SQLite3** for embedded/edge
+* **MongoDB**, **PostgreSQL**, **TimescaleDB** for production/cloud
+* **LaTeX**, **Pandoc**, **Markdown** for documentation
+* **Invoice Ninja** for self-hosted ops
+
+**Philosophy**
+
+* Bounded chaos → deterministic serendipity
+* IaF (Infrastructure as File)
+* Zero-Knowledge Provisioning
+
+---
+
 # Bounded Chaos Deployment: A Minikube & Meta-CUE Manifesto
 
 Let's break down this brilliant manifesto into an actionable MVP that demonstrates type safety's power through tangible results.
