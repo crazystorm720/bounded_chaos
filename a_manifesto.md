@@ -6,6 +6,12 @@ use gemini since this is a bit long!
 
 ---
 
+applying formal methods and mathematical constraints to infrastructure configuration," it's a logical evolution of existing practices. The CUE validation pipeline alone would prevent a lot of common deployment failures.
+
+---
+
+---
+
 This framework is **extremely practical** for real-world systems where reliability, efficiency, and auditability matter. Here’s exactly where and why it’s useful:
 
 ---
