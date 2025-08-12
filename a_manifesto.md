@@ -852,6 +852,120 @@ echo "cpu: 1, ram: 2" | cue eval -e 'assert math.Round(ram/cpu*1000)==1618'
 # Error: ram/cpu ratio != φ (1.618)
 ```
 
+──────────────────────────────────────────────────────────────  
+Debian 12 Minimal Deployment – Clean Reference  
+──────────────────────────────────────────────────────────────  
+
+Purpose  
+Provide a concise, opinionated checklist that turns the numbered directory tree you already like into a repeatable, auditable Debian-12-minimal build.
+
+Conventions  
+• One bullet per file.  
+• Commands are copy-paste ready.  
+• No prose beyond what is strictly necessary.
+
+────────────────────── 00_ Bootstrap
+• 00_00_installer_seed.cfg  
+  tasksel tasksel/first multiselect standard  
+  d-i pkgsel/include string openssh-server  
+• 00_10_register_debian_mirror.sh  
+  echo "deb [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg] http://deb.debian.org/debian bookworm main" > /etc/apt/sources.list  
+• 00_20_first_boot_update.sh  
+  apt update && apt -y dist-upgrade && rm /etc/systemd/system/first-boot.service
+
+────────────────────── 10_ System
+• 10_00_hostname_timezone.sh  
+  hostnamectl set-hostname <fqdn> && timedatectl set-timezone UTC  
+• 10_10_ntp_chrony.conf  
+  server <ntp> nts iburst maxpoll 9  
+• 10_20_dns_resolved.conf  
+  ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf  
+• 10_30_sysctl_hardening.conf  
+  kernel.unprivileged_bpf_disabled=1  
+  net.ipv4.conf.all.rp_filter=1
+
+────────────────────── 20_ Identity
+• 20_00_users_groups.yml  
+  - { name: admin, groups: [ wheel ], shell: /bin/bash }  
+• 20_10_sudoers.d/admin  
+  admin ALL=(ALL) NOPASSWD: ALL  
+• 20_20_sshd_config_fragment.conf  
+  PermitRootLogin no  
+  PasswordAuthentication no  
+• 20_30_authorized_keys/admin  
+  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5… admin@host
+
+────────────────────── 30_ Storage
+• 30_00_luks_btrfs_subvols.sh  
+  cryptsetup luksFormat --type luks2 /dev/sda2  
+  btrfs subvolume create /rootfs /var/lib /home  
+• 30_10_lvm_thinpool.sh  
+  lvcreate -L 20G -T vg0/thin  
+• 30_20_fstab_mounts.conf  
+  LABEL=root / btrfs defaults,noatime,compress-force=zstd:3 0 0  
+• 30_30_zram_generator.conf  
+  [zram0]  
+  zram-fraction=0.25  
+  compression-algorithm=zstd
+
+────────────────────── 40_ Packages
+• 40_00_sources_list_debian.sh  
+  echo "deb http://deb.debian.org/debian bookworm-backports main" >> /etc/apt/sources.list.d/backports.list  
+• 40_10_essential_packages.lst  
+  ca-certificates curl gnupg2 needrestart rsync  
+• 40_20_backports_pin.pref  
+  Package: *  
+  Pin: release a=bookworm-backports  
+  Pin-Priority: 100  
+• 40_30_flatpak_remote.sh  
+  flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+────────────────────── 50_ Services
+• 50_00_unit_templates/backup@.service  
+  [Unit] Description=Backup %i  
+  [Service] Type=oneshot ExecStart=/usr/local/bin/backup %i DynamicUser=yes  
+• 50_10_enable_units.sh  
+  systemctl preset-all  
+  systemctl mask bluetooth.service
+
+────────────────────── 60_ Runtime
+• 60_00_nginx_sites/00-default.conf  
+  server { listen 80 default_server; root /var/www/html; }  
+• 60_10_postgres_conf.d/10-logging.conf  
+  log_statement = 'ddl'  
+• 60_20_logrotate_d/nginx  
+  /var/log/nginx/*.log { daily rotate 14 compress delaycompress }  
+• 60_30_cron_dropins/backup  
+  0 2 * * * root /usr/local/bin/backup daily
+
+────────────────────── 70_ Performance
+• 70_00_cgroup_v2_enable.sh  
+  grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=1"  
+• 70_10_cpu_governor.sh  
+  cpupower frequency-set -g performance  
+• 70_20_irqbalance_ban.conf  
+  IRQBALANCE_BANNED_CPUS=3  
+• 70_30_tuned_profile.conf  
+  tuned-adm profile throughput-performance
+
+────────────────────── 80_ Security
+• 80_00_nftables_rules.nft  
+  table inet filter { chain input { type filter hook input priority 0; policy drop; } }  
+• 80_10_fail2ban_jail.local  
+  [sshd] enabled=true backend=systemd  
+• 80_20_apparmor_profiles/local.nginx  
+  #include <tunables/global> /usr/sbin/nginx flags=(complain) { … }  
+• 80_30_aide_daily.timer  
+  systemctl enable --now aidecheck.timer
+
+────────────────────── 90_ Local
+• 90_00_site_overrides.sh  
+  # One-time local tweaks; must be idempotent  
+• 99_zz_last_minute_fix.sh  
+  echo "Executed $(date)" >> /var/log/zz_fix.log && rm -- "$0"
+
+────────────────────── End of file
+
 ### Visual Proof
 ```mermaid
 graph TD
