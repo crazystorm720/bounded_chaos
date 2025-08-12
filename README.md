@@ -1,4 +1,4 @@
-<you're either first or you are the first loser>
+<you're either first or you are the first loser> **you need both the README.md & a_manifesto.md for the true power**
 
 https://github.com/crazystorm720/bounded_chaos/blob/main/a_manifesto.md
 
