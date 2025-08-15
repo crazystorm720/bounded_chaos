@@ -1,3 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">  
+  <circle cx="50" cy="50" r="40" stroke="#ff5555" fill="none" stroke-width="3"/>  
+  <text x="50" y="50" font-family="monospace" text-anchor="middle" fill="#ff5555">Θ-CERTIFIED</text>  
+  <text x="50" y="70" font-family="monospace" text-anchor="middle" font-size="8" fill="#ff5555">(WILL SELF-DESTRUCT)</text>  
+</svg>  
+
 🪞 3-Way Mirror – Recursive Unpack TRUST with some first principles! thanks elon for the sound bite the media played of you saying this!
 ---------------------------------
 
