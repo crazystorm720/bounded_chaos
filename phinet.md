@@ -1,4 +1,4 @@
-# 🪞 3-Way Mirror – **Pi-Ready MVP**  {ΨΦΘ} U {Φφπ}
+# 🪞 3-Way Mirror – **Pi-Ready MVP**  {ΨΦΘ} U {Φφπ} the bridge is Φ just be careful with rouding too early
 
 {BOUNDED/CHAOS} | {deterministic/serendipity} | {v/φ} | {I use Arch btw!} | {42f} | {LGTM 👍}
 
