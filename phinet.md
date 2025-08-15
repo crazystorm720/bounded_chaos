@@ -1,4 +1,7 @@
-# 🪞 3-Way Mirror – **Pi-Ready MVP**  
+# 🪞 3-Way Mirror – **Pi-Ready MVP**  {ΨΦΘ} U {Φφπ}
+
+{BOUNDED/CHAOS} | {deterministic/serendipity} | {v/φ} | {I use Arch btw!} | {42f} | {LGTM 👍}
+
 Run the whole thing on a **single Raspberry Pi 4** running **Arch Linux** in **≤ 15 minutes**, no YAML hand-editing, no Helm, no Kustomize—only **CUE + φ**.
 
 ---
