@@ -6,7 +6,7 @@
 
 ---
 
-{BOUNDED/CHAOS} | {deterministic/serendipity} | {ΨΦΘ} | {I use Arch btw!} | {42f} | {LGTM 👍}
+{BOUNDED/CHAOS} | {deterministic/serendipity} | {ΨΦΘ} | {I use Arch btw!} | {42f} | {LGTM 👍} when you peg to math vs HiPPO
 
 ---
 
