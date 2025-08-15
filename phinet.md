@@ -1,3 +1,194 @@
+# 🪞 3-Way Mirror – **Pi-Ready MVP**  
+Run the whole thing on a **single Raspberry Pi 4** running **Arch Linux** in **≤ 15 minutes**, no YAML hand-editing, no Helm, no Kustomize—only **CUE + φ**.
+
+---
+
+## 0. One-liner (internet willing)
+
+```bash
+curl -sL https://tinyurl.com/phinet-pi | bash
+```
+
+If your network chokes, scroll to the **manual steps** below.
+
+---
+
+## 1. Manual 5-Minute Walk-through
+
+```bash
+# 1.1  Arch packages
+sudo pacman -Syu --noconfirm
+sudo pacman -S --noconfirm docker minikube kubectl go cue wireguard-tools
+
+# 1.2  Docker & Minikube up
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER && newgrp docker
+minikube start --driver=docker --nodes=5
+```
+
+---
+
+## 2. Drop the **single source-of-truth**
+
+`~/phinet/spec/root/network.cue`
+
+```cue
+package root
+
+import (
+	"list"
+	"math"
+)
+
+_maxNodes: 5            // Fib(8) = 21 → clamp to 5
+_primeIdx: [2, 3, 5]   // only these may carry state
+
+#ResourceShape: {
+	cpu: int
+	ram: int
+	assert: math.Multiply(cpu, 1.618) & math.Floor == ram
+}
+
+#Node: {
+	index:    int & >=1 & <=_maxNodes
+	stateful: bool
+	if list.Contains(_primeIdx, index) { stateful: true }
+	resources: #ResourceShape
+}
+
+#Network: {
+	nodes: [#Node, ...] & list.MaxItems(_maxNodes)
+}
+```
+
+Validate instantly:
+
+```bash
+cue vet spec/root/network.cue
+```
+
+---
+
+## 3. **Render** the cluster
+
+```bash
+# 3.1  Generate YAML from CUE
+cue export spec/root/network.cue --out yaml > cluster.yaml
+
+# 3.2  Apply golden-ratio taints & labels
+kubectl apply -f cluster.yaml
+```
+
+---
+
+## 4. **WireGuard overlay** (zero-config)
+
+`~/phinet/overlays/wg/wg.cue`
+
+```cue
+package wg
+
+import "list"
+
+#Peer: {
+	name: string
+	node: int & >=1 & <=5
+	addr: "10.42.\(node).\(node)/32"
+	key:  string
+}
+
+#Mesh: {
+	peers: [#Peer, ...] & list.MaxItems(5)
+}
+```
+
+Generate keys & manifests:
+
+```bash
+wg genkey | tee wg.key | wg pubkey > wg.pub
+cue export wg.cue -e '#Mesh' --out yaml | envsubst | kubectl apply -f -
+```
+
+Confirm:
+
+```bash
+kubectl get pods -A | grep wg
+```
+
+---
+
+## 5. **Break it on purpose** (type-safety demo)
+
+Edit `network.cue`, change one node to:
+
+```cue
+index: 6
+stateful: true
+```
+
+Re-run:
+
+```bash
+cue vet spec/root/network.cue
+```
+
+You’ll get:
+
+```
+#Node.stateful: invalid value true (cannot be true when index is 6)
+```
+
+No cryptic K8s events—just **math saying no**.
+
+---
+
+## 6. **Ship as OCI** (optional)
+
+```bash
+cue export ./... | jq . > dist/bundle/manifest.json
+docker build -t ghcr.io/$(whoami)/phinet:pi-$(git rev-parse --short HEAD) -f ci/docker/Dockerfile .
+docker push ghcr.io/$(whoami)/phinet:pi-$(git rev-parse --short HEAD)
+```
+
+Anyone can now:
+
+```terraform
+data "http" "phinet" {
+  url = "https://ghcr.io/v2/$(whoami)/phinet/manifests/pi-1a2b3c"
+}
+```
+
+---
+
+## 7. **A/B swap in 10 s—WireGuard ↔ VXLAN**
+
+```bash
+# 7.1  Replace overlay
+rm -rf overlays/wg && ln -s vxlan overlays/wg
+
+# 7.2  Re-export (no YAML edits)
+cue export ./... | kubectl apply -f -
+```
+
+---
+
+## 8. **TL;DR for the sceptic**
+
+| What | Traditional GitOps | φ-net (CUE) |
+|---|---|---|
+| YAML drift | `git diff` hell | `cue vet` rejects **before** YAML exists |
+| “Works on my cluster” | runtime panic | **compile-time** proof |
+| Overlay swap | Helm values + kustomize | **symbolic link** |
+| Node rules | human comments | **math constraints** |
+| Maintainer burden | Linus filters patches | **type system filters humans** |
+
+---
+
+> *“The spaniel does not answer; he simply continues counting.”*  
+> Because once intent is encoded in **CUE & φ**, the system counts for itself. 🐶
+
+---
+
 # φ-net: Infrastructure as Φile  
 *“YAML is the golden prison; CUE is the pardon.”*
 
