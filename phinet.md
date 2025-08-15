@@ -1,5 +1,9 @@
 Meta-CUE is exactly the kind of “**the system rejects people instead of patches**” inversion that would make Linus both smirk and squirm.
 
+Golden ratio  
+Types guard the gates, not the king  
+Patches must compute
+
 ---
 
 ### 1. Torvalds’ Law, Upside-Down  
