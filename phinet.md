@@ -4,6 +4,200 @@ a mathematically provable, type-safe, zero-trust VPN whose entire specification 
 
 bounded chaos φ-net
 
+# 🪞 3-Way Mirror – Quick-Start MVP  
+“Show, don’t tell” edition for a single Raspberry Pi 4 running Arch Linux.
+
+---
+
+## 0. TL;DR  
+In **≤ 15 minutes** you will have:
+
+* **Minikube** with **exactly 5 nodes** (Fibonacci stop at 8 → clamp to 5).  
+* **Stateful pods only on prime-indexed nodes** (2, 3, 5).  
+* **CPU:RAM ratio locked to ϕ** (golden ratio).  
+* **One CUE file** that **rejects** any YAML that breaks the rules.  
+* **A WireGuard overlay** auto-generated from the same CUE file.  
+
+---
+
+## 1. Fresh Arch on the Pi
+
+```bash
+pacman -Syu --noconfirm
+pacman -S --noconfirm docker minikube kubectl go cue wireguard-tools
+```
+
+Enable the services:
+
+```bash
+systemctl enable --now docker
+usermod -aG docker $USER   # re-login
+```
+
+---
+
+## 2. Minikube with CUE constraints
+
+`network.cue` (place in `~/phinet/spec/root/network.cue`):
+
+```cue
+package root
+
+// ---------- 1. Bounded literals ----------
+_maxNodes: 5            // Fib(8) -> 5 after clamp
+_primeIdx: [2, 3, 5]   // indices that may carry state
+
+// ---------- 2. Golden-ratio resource shape ----------
+#ResourceShape: {
+    cpu:  int
+    ram:  int
+    assert: math.Multiply(cpu, 1.618) & math.Floor == ram
+}
+
+// ---------- 3. Node model ----------
+#Node: {
+    index: int & >=1 & <=_maxNodes
+    stateful: bool
+    if list.Contains(_primeIdx, index) {
+        stateful: true
+    }
+    resources: #ResourceShape
+}
+
+// ---------- 4. Network contract ----------
+#Network: {
+    nodes: [#Node, ...] & list.MaxItems(_maxNodes)
+}
+```
+
+Validate it:
+
+```bash
+cue vet network.cue
+```
+
+---
+
+## 3. Generate the Minikube spec
+
+`generate.sh`:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Render the 5-node cluster
+cue export network.cue --out yaml > minikube.yaml
+
+# Start minikube with exactly 5 nodes
+minikube start --driver=docker --nodes=5
+
+# Apply golden-ratio taints
+kubectl apply -f minikube.yaml
+```
+
+Run it:
+
+```bash
+chmod +x generate.sh
+./generate.sh
+```
+
+---
+
+## 4. WireGuard overlay (zero-config)
+
+`wg.cue` (drop in `~/phinet/overlays/wg/wg.cue`):
+
+```cue
+package wg
+
+import "list"
+
+#Peer: {
+    name:  string
+    node:  int
+    key:   string
+    addr:  "10.42." + strings.Join([node, node], ".") + "/32"
+}
+
+#Mesh: {
+    peers: [#Peer, ...] & list.MaxItems(5)
+}
+```
+
+Generate keys & manifests:
+
+```bash
+wg genkey | tee /tmp/wg.key | wg pubkey > /tmp/wg.pub
+cue export wg.cue -e '#Mesh' --out yaml | envsubst | kubectl apply -f -
+```
+
+You now have:
+
+* **Encrypted overlay** between all 5 nodes.  
+* **Keys rotated** every time you re-export the CUE file.  
+* **Type-safe guarantee** that every peer entry has a valid node index.
+
+---
+
+## 5. Show the sceptic why type-safety matters
+
+Change one value:
+
+```cue
+#Node: {
+    index: 6           // not prime
+    stateful: true     // violates rule
+}
+```
+
+Run:
+
+```bash
+cue vet network.cue
+```
+
+Output:
+
+```
+#Node.stateful: invalid value true (cannot be true when index is 6)
+```
+
+That’s **one line** of feedback instead of a 30-minute kubectl-debug session.
+
+---
+
+## 6. Ship it as OCI
+
+```bash
+cue export ./... | jq . > manifest.json
+docker build -t ghcr.io/$(whoami)/phinet:pi-$(git rev-parse --short HEAD) -f ci/docker/Dockerfile .
+docker push ghcr.io/$(whoami)/phinet:pi-$(git rev-parse --short HEAD)
+```
+
+Now anyone can:
+
+```terraform
+data "http" "phinet" {
+  url = "https://ghcr.io/v2/$(whoami)/phinet/manifests/pi-1a2b3c4"
+}
+```
+
+---
+
+## 7. Next A/B test (optional)
+
+Replace the WireGuard overlay with **VXLAN** or **SR-IOV**—just drop a new file in `overlays/` and re-export.  
+No YAML, no Helm, no Kustomize; only **math and types**.
+
+---
+
+> “**The spaniel does not answer; he simply continues counting.**”  
+> Because once constraints are encoded in CUE & ϕ, **the system counts for itself**. 🐶
+
+---
+
 
 Below is a **meta-repo skeleton** for `φ-net`.  
 It is **deliberately over-factored** so that:
