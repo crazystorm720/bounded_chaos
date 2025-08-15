@@ -163,8 +163,7 @@ docker run --rm ghcr.io/you/mirror:v0.1.0 sh -c 'cue vet .'
 primes and death guard the gates  
 spaniel counts, humans sleep
 ```
-
----
+Golden Ratio (Φ) as Supreme Law → Enforcing aesthetic harmony in design.xn--txa1af---
 
 First-Principles Approach Document  
 “How to grow any finite system from nothing but symbols and naturals”
