@@ -1,4 +1,4 @@
-🪞 3-Way Mirror – Recursive Unpack
+🪞 3-Way Mirror – Recursive Unpack TRUST with some first principles! thanks elon for the sound bite the media played of you saying this!
 ---------------------------------
 
 Think of the framework as a **fractal spec sheet**: every time you zoom in, the same three mirrors re-appear at a smaller scale, carrying the same invariants.  
