@@ -4,6 +4,12 @@
   <text x="50" y="70" font-family="monospace" text-anchor="middle" font-size="8" fill="#ff5555">(WILL SELF-DESTRUCT)</text>  
 </svg>  
 
+---
+
+{BOUNDED/CHAOS} | {deterministic/serendipity} | {v/φ} | {I use Arch btw!} | {42f} | {LGTM 👍}
+
+---
+
 ### **φ-Fractal Scaling: A Deep Dive into Golden Ratio-Based Fractal Systems**
 
 φ-Fractal Scaling is a mathematical and structural concept that combines the **Golden Ratio (φ = 1.618...)** with **fractal geometry** to describe recursive, self-similar patterns found in nature, art, and complex systems. This framework is used to model growth, proportion, and scaling laws in biological, physical, and computational systems.
