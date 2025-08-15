@@ -10,6 +10,10 @@
 
 ---
 
+<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="jason-davis-27442118a" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://ph.linkedin.com/in/jason-davis-27442118a?trk=profile-badge">Jason Davis</a></div>
+
+---
+
 Here’s a **distilled, tone-aligned meta-framework** organized by escalating layers of abstraction—each layer enforcing the same core principles through recursion:  
 
 ---
