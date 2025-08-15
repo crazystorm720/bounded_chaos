@@ -1,3 +1,10 @@
+Infrastructure-as-file (IaF) taken to the extreme:
+
+a mathematically provable, type-safe, zero-trust VPN whose entire specification lives in a single Git repo and can be consumed as code, JSON, OCI image, or Terraform data-source.
+
+bounded chaos φ-net
+
+
 Below is a **meta-repo skeleton** for `φ-net`.  
 It is **deliberately over-factored** so that:
 
